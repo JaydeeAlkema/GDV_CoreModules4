@@ -54,7 +54,6 @@ public class HighscoresUI : MonoBehaviour
 		WWWForm form = new WWWForm();
 		form.AddField( "limit", limit );
 
-
 		using UnityWebRequest www = UnityWebRequest.Post( "https://studentdav.hku.nl/~jaydee.alkema/databasing/get_highscores.php", form );
 		yield return www.SendWebRequest();
 
