@@ -1,33 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using NaughtyAttributes;
 using Photon.Pun;
-
-public enum MovementState
-{
-	idle,
-	up,
-	down,
-	left,
-	right
-};
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-	[SerializeField] private MovementState movementState = MovementState.idle;
+	[SerializeField] private float health = 10f;
 	[SerializeField] private float speed = 5f;
+	[SerializeField] private bool canMove = true;
+	[SerializeField] private bool canAttack = true;
+	[Space]
+	[SerializeField] private TextMeshPro usernameText;
+	[SerializeField] private Image healthBar;
+	[SerializeField] private float minX, maxX, minY, maxY;
 
-	[ReadOnly] [SerializeField] private Vector2 movementInput = Vector2.zero;
-	[ReadOnly] [SerializeField] private Rigidbody2D rb2d;
-	[ReadOnly] [SerializeField] private Animator anim;
-	[ReadOnly] [SerializeField] private PhotonView view;
+	[ReadOnly] [SerializeField] private Vector2 movementInput;
+	[ReadOnly] [SerializeField] private Vector2 moveAmount;
+	[ReadOnly] [SerializeField] private float attackInput;
+
+	private Animator anim;
+	private PhotonView view;
 
 	private void Start()
 	{
-		rb2d = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
 		view = GetComponent<PhotonView>();
+
+		SetUsername();
 	}
 
 	private void Update()
@@ -35,33 +37,109 @@ public class PlayerController : MonoBehaviour
 		if( view.IsMine )
 		{
 			movementInput = new Vector2( Input.GetAxisRaw( "Horizontal" ), Input.GetAxisRaw( "Vertical" ) );
+			attackInput = Input.GetAxisRaw( "Fire1" );
+			moveAmount = speed * Time.deltaTime * movementInput.normalized;
 
-			UpdateMoveDirection();
+			Wrap();
+
+			if( canMove && movementInput != Vector2.zero )
+			{
+				transform.position += ( Vector3 )moveAmount;
+			}
+
+			if( canAttack && attackInput == 1 )
+			{
+				Attack();
+			}
+
+
+			if( Input.GetKeyDown( KeyCode.H ) )
+			{
+				view.RPC( "TakeDamageRPC", RpcTarget.All );
+			}
+
 			AnimateSprite();
 		}
 	}
 
-	private void FixedUpdate()
+	private void OnTriggerEnter2D( Collider2D collision )
 	{
-		Move();
-	}
-
-	private void Move()
-	{
-		rb2d.velocity = new Vector2( movementInput.normalized.x * speed, movementInput.normalized.y * speed );
-	}
-
-	private void UpdateMoveDirection()
-	{
-		if( movementInput.x == 1 ) { movementState = MovementState.right; }
-		if( movementInput.x == -1 ) { movementState = MovementState.left; }
-		if( movementInput.y == 1 ) { movementState = MovementState.up; }
-		if( movementInput.y == -1 ) { movementState = MovementState.down; }
+		if( view.IsMine )
+		{
+			TakeDamage();
+		}
 	}
 
 	private void AnimateSprite()
 	{
-		anim.SetFloat( "Horizontal", movementInput.x );
-		anim.SetFloat( "Vertical", movementInput.y );
+		if( canMove )
+		{
+			anim.SetFloat( "Horizontal", movementInput.x );
+			anim.SetFloat( "Vertical", movementInput.y );
+		}
+	}
+
+	private void Attack()
+	{
+		view.RPC( "AttackRPC", RpcTarget.All );
+	}
+
+	[PunRPC]
+	private IEnumerator AttackRPC()
+	{
+		anim.SetTrigger( "Attack" );
+
+		canMove = false;
+		canAttack = false;
+		yield return new WaitForSeconds( 0.3f );
+		canMove = true;
+		yield return new WaitForSeconds( 0.2f );
+		canAttack = true;
+	}
+
+	public void TakeDamage()
+	{
+		view.RPC( "TakeDamageRPC", RpcTarget.All );
+	}
+
+	[PunRPC]
+	public void TakeDamageRPC()
+	{
+		health -= 10f;
+		healthBar.fillAmount = health / 100f;
+	}
+
+	public void SetUsername()
+	{
+		view.RPC( "SetUsernameRPC", RpcTarget.All );
+	}
+
+	[PunRPC]
+	private void SetUsernameRPC()
+	{
+		usernameText.text = PhotonNetwork.NickName;
+	}
+
+	void Wrap()
+	{
+		if( transform.position.x < minX )
+		{
+			transform.position = new Vector2( maxX, transform.position.y );
+		}
+
+		if( transform.position.x > maxX )
+		{
+			transform.position = new Vector2( minX, transform.position.y );
+		}
+
+		if( transform.position.y < minY )
+		{
+			transform.position = new Vector2( transform.position.x, maxY );
+		}
+
+		if( transform.position.y > maxY )
+		{
+			transform.position = new Vector2( transform.position.x, minY );
+		}
 	}
 }

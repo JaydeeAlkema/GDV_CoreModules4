@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using NaughtyAttributes;
+using Photon.Pun;
 
 public class LoginUI : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class LoginUI : MonoBehaviour
 
 	[BoxGroup( "Feedback Texts" )] [SerializeField] private TextMeshProUGUI feedbackText;
 
-	[BoxGroup( "ScriptableObjects" )] [SerializeField] private UserDataScriptableObject userDataScriptableObject;
+	[BoxGroup( "Scriptableobjects" )] [SerializeField] private UserDataScriptableObject userDataScriptable;
 
 	private void OnEnable()
 	{
@@ -103,13 +104,15 @@ public class LoginUI : MonoBehaviour
 		UserData userData = new UserData();
 		userData = UserData.CreateFromJSON( www.downloadHandler.text );
 
-		userDataScriptableObject.id = userData.id;
-		userDataScriptableObject.username = usernameInputField.text;
-		userDataScriptableObject.firstname = userData.first_name;
-		userDataScriptableObject.lastname = userData.last_name;
-		userDataScriptableObject.email = userData.email;
-		userDataScriptableObject.registrationdate = userData.registrationdate;
-		userDataScriptableObject.rawJSON = www.downloadHandler.text;
+		userDataScriptable.id = userData.id;
+		userDataScriptable.username = usernameInputField.text;
+		userDataScriptable.firstname = userData.first_name;
+		userDataScriptable.lastname = userData.last_name;
+		userDataScriptable.email = userData.email;
+		userDataScriptable.registrationdate = userData.registrationdate;
+		userDataScriptable.rawJSON = www.downloadHandler.text;
+
+		PhotonNetwork.NickName = usernameInputField.text;
 	}
 
 	private bool FailChecks()

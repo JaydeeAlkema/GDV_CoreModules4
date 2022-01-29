@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using NaughtyAttributes;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -78,5 +79,10 @@ public class UIManager : MonoBehaviour
 	public void OnHighscoreButtonPressed( GameObject highscorePanel )
 	{
 		highscorePanel.SetActive( !highscorePanel.activeInHierarchy );
+	}
+
+	public void LoadSceneByString( string sceneName )
+	{
+		SceneManager.LoadScene( sceneName );
 	}
 }
