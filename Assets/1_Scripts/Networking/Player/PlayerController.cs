@@ -8,14 +8,14 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
-	[SerializeField] private float health = 10f;
 	[SerializeField] private float speed = 5f;
 	[SerializeField] private bool canMove = true;
 	[SerializeField] private bool canAttack = true;
 	[Space]
 	[SerializeField] private TextMeshPro usernameText;
-	[SerializeField] private Image healthBar;
 	[SerializeField] private float minX, maxX, minY, maxY;
+	[Space]
+	[SerializeField] private AudioClip[] movementAudio;
 
 	[ReadOnly] [SerializeField] private Vector2 movementInput;
 	[ReadOnly] [SerializeField] private Vector2 moveAmount;
@@ -23,11 +23,13 @@ public class PlayerController : MonoBehaviour
 
 	private Animator anim;
 	private PhotonView view;
+	private Health health;
 
 	private void Start()
 	{
 		anim = GetComponent<Animator>();
 		view = GetComponent<PhotonView>();
+		health = FindObjectOfType<Health>();
 
 		SetUsername();
 	}
@@ -66,7 +68,10 @@ public class PlayerController : MonoBehaviour
 	{
 		if( view.IsMine )
 		{
-			TakeDamage();
+			if( collision.CompareTag( "Enemy" ) )
+			{
+				health.TakeDamage();
+			}
 		}
 	}
 
@@ -97,30 +102,25 @@ public class PlayerController : MonoBehaviour
 		canAttack = true;
 	}
 
-	public void TakeDamage()
-	{
-		view.RPC( "TakeDamageRPC", RpcTarget.All );
-	}
-
-	[PunRPC]
-	public void TakeDamageRPC()
-	{
-		health -= 10f;
-		healthBar.fillAmount = health / 100f;
-	}
-
 	public void SetUsername()
 	{
-		view.RPC( "SetUsernameRPC", RpcTarget.All );
+		view.RPC( "SetUsernameRPC", RpcTarget.AllBuffered );
 	}
 
 	[PunRPC]
 	private void SetUsernameRPC()
 	{
-		usernameText.text = PhotonNetwork.NickName;
+		if( view.IsMine )
+		{
+			usernameText.text = PhotonNetwork.NickName;
+		}
+		else
+		{
+			usernameText.text = view.Owner.NickName;
+		}
 	}
 
-	void Wrap()
+	private void Wrap()
 	{
 		if( transform.position.x < minX )
 		{
@@ -141,5 +141,10 @@ public class PlayerController : MonoBehaviour
 		{
 			transform.position = new Vector2( transform.position.x, minY );
 		}
+	}
+
+	private void PlayMovementAudio()
+	{
+		AudioSource.PlayClipAtPoint( movementAudio[Random.Range( 0, movementAudio.Length )], transform.position, 0.2f );
 	}
 }

@@ -20,13 +20,13 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 8741175040201928081, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
+      value: {fileID: 4699534080965025001, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
     - time: 0.16666667
-      value: {fileID: 8395302755725611473, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
+      value: {fileID: -8564194621856540894, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
     - time: 0.33333334
-      value: {fileID: 862675968567189718, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
+      value: {fileID: 4054690162346636647, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
     - time: 0.5
-      value: {fileID: 250184048146966110, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
+      value: {fileID: 1923874944135431609, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -46,10 +46,10 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 8741175040201928081, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
-    - {fileID: 8395302755725611473, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
-    - {fileID: 862675968567189718, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
-    - {fileID: 250184048146966110, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
+    - {fileID: 4699534080965025001, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
+    - {fileID: -8564194621856540894, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
+    - {fileID: 4054690162346636647, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
+    - {fileID: 1923874944135431609, guid: f06b0b506c0561b418e93af161e2813c, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
@@ -74,4 +74,18 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0
+    functionName: PlayMovementAudio
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.33333334
+    functionName: PlayMovementAudio
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

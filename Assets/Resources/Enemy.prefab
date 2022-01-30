@@ -348,7 +348,12 @@ MonoBehaviour:
   players: []
   nearestPlayer: {fileID: 0}
   speed: 3
+  healthbarParent: {fileID: 1677055331491731259}
   healthBarImage: {fileID: 3325589980159644017}
+  deathFX: {fileID: 196548229510132308, guid: 019889997d11cbe4c8031ce8814432ed, type: 3}
+  damageAudio:
+  - {fileID: 8300000, guid: 6e8016cb07cabfa45828931d475ce6e0, type: 3}
+  - {fileID: 8300000, guid: e102781d75ca25349b0ae38f3c03b560, type: 3}
 --- !u!114 &1957135123937474713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,9 +394,9 @@ MonoBehaviour:
     SynchronizeEnabled: 1
     TeleportEnabled: 1
     TeleportIfDistanceGreaterThan: 3
-    InterpolateOption: 2
+    InterpolateOption: 4
     InterpolateMoveTowardsSpeed: 1
-    InterpolateLerpSpeed: 1
+    InterpolateLerpSpeed: 10
     ExtrapolateOption: 0
     ExtrapolateSpeed: 1
     ExtrapolateIncludingRoundTripTime: 1

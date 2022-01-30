@@ -7,7 +7,7 @@ using TMPro;
 
 public class Score : MonoBehaviour
 {
-	[SerializeField] private int score = 0;
+	public int score = 0;
 	[SerializeField] private PhotonView view;
 	[SerializeField] private TextMeshProUGUI scoreText;
 

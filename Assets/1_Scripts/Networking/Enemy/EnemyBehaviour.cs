@@ -12,7 +12,11 @@ public class EnemyBehaviour : MonoBehaviour
 	[SerializeField] PlayerController nearestPlayer;
 	[SerializeField] private float speed;
 	[Space]
+	[SerializeField] private GameObject healthbarParent;
 	[SerializeField] private Image healthBarImage;
+	[Space]
+	[SerializeField] private GameObject deathFX;
+	[SerializeField] private AudioClip[] damageAudio;
 
 	private PhotonView view;
 	private Score score;
@@ -22,6 +26,7 @@ public class EnemyBehaviour : MonoBehaviour
 		view = GetComponent<PhotonView>();
 		players = FindObjectsOfType<PlayerController>();
 		score = FindObjectOfType<Score>();
+		healthbarParent.SetActive( false );
 	}
 
 	private void Update()
@@ -54,17 +59,35 @@ public class EnemyBehaviour : MonoBehaviour
 	{
 		if( collision.CompareTag( "Player" ) )
 		{
-			health -= 25f;
-			healthBarImage.fillAmount = health / 100f;
+			TakeDamage();
 
 			if( PhotonNetwork.IsMasterClient )
 			{
 				if( health <= 0 )
 				{
 					score.AddScore();
+					view.RPC( "SpawnParticle", RpcTarget.All );
 					PhotonNetwork.Destroy( this.gameObject );
 				}
 			}
 		}
+	}
+
+	private void TakeDamage()
+	{
+		health -= 25f;
+		if( !healthbarParent.activeInHierarchy ) healthbarParent.SetActive( true );
+		healthBarImage.fillAmount = health / 100f;
+
+		if( health != 0 )
+		{
+			AudioSource.PlayClipAtPoint( damageAudio[Random.Range( 0, damageAudio.Length )], transform.position );
+		}
+	}
+
+	[PunRPC]
+	private void SpawnParticle()
+	{
+		Instantiate( deathFX, transform.position, Quaternion.identity );
 	}
 }
