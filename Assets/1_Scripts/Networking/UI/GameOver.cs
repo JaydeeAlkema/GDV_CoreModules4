@@ -1,25 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using Photon.Pun;
 using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameOver : MonoBehaviour
 {
-	[SerializeField] private TextMeshProUGUI scoreText;
 	[SerializeField] private GameObject restartButton;
 
 	private PhotonView view;
-	private Score score;
 
 	private void Start()
 	{
 		view = GetComponent<PhotonView>();
-
-		score = FindObjectOfType<Score>();
-		scoreText.text = $"Combined Score:\n{score.score}";
 
 		if( PhotonNetwork.IsMasterClient == false )
 		{

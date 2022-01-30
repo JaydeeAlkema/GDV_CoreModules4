@@ -1,18 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using NaughtyAttributes;
 using Photon.Pun;
+using System.Collections;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+	public int score = 0;
+	public float health = 100f;
+
 	[SerializeField] private float speed = 5f;
 	[SerializeField] private bool canMove = true;
 	[SerializeField] private bool canAttack = true;
 	[Space]
 	[SerializeField] private TextMeshPro usernameText;
+	[SerializeField] private Image healthBarImage;
+	[SerializeField] private TextMeshProUGUI healthBarText;
 	[SerializeField] private float minX, maxX, minY, maxY;
 	[Space]
 	[SerializeField] private AudioClip[] movementAudio;
@@ -23,13 +27,17 @@ public class PlayerController : MonoBehaviour
 
 	private Animator anim;
 	private PhotonView view;
-	private Health health;
+	private BoxCollider2D boxCollider2D;
+	private GameManager gameManager;
+
+	public TextMeshPro UsernameText { get => usernameText; set => usernameText = value; }
 
 	private void Start()
 	{
 		anim = GetComponent<Animator>();
 		view = GetComponent<PhotonView>();
-		health = FindObjectOfType<Health>();
+		boxCollider2D = GetComponent<BoxCollider2D>();
+		gameManager = FindObjectOfType<GameManager>();
 
 		SetUsername();
 	}
@@ -70,7 +78,7 @@ public class PlayerController : MonoBehaviour
 		{
 			if( collision.CompareTag( "Enemy" ) )
 			{
-				health.TakeDamage();
+				TakeDamage( 10 );
 			}
 		}
 	}
@@ -102,13 +110,7 @@ public class PlayerController : MonoBehaviour
 		canAttack = true;
 	}
 
-	public void SetUsername()
-	{
-		view.RPC( "SetUsernameRPC", RpcTarget.AllBuffered );
-	}
-
-	[PunRPC]
-	private void SetUsernameRPC()
+	private void SetUsername()
 	{
 		if( view.IsMine )
 		{
@@ -146,5 +148,46 @@ public class PlayerController : MonoBehaviour
 	private void PlayMovementAudio()
 	{
 		AudioSource.PlayClipAtPoint( movementAudio[Random.Range( 0, movementAudio.Length )], transform.position, 0.2f );
+	}
+
+	public void AddScore()
+	{
+		view.RPC( "AddScoreRPC", RpcTarget.All );
+	}
+
+	[PunRPC]
+	private void AddScoreRPC()
+	{
+		score++;
+	}
+
+	public void TakeDamage( int damage )
+	{
+		view.RPC( "TakeDamageRPC", RpcTarget.All, damage );
+	}
+
+	[PunRPC]
+	private void TakeDamageRPC( int damage )
+	{
+		if( health > 0 )
+		{
+			health -= damage;
+			healthBarImage.fillAmount = health / 100f;
+			healthBarText.text = health.ToString();
+		}
+
+		if( health <= 0 )
+		{
+			anim.SetBool( "Dead", true );
+
+			canMove = false;
+			canAttack = false;
+
+			healthBarText.text = "DEAD";
+
+			boxCollider2D.enabled = false;
+
+			gameManager.GameOver();
+		}
 	}
 }

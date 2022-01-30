@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/6_Scenes/Multiplayer/Loading.unity
     guid: 262b4ed00a1af6247921f1d8f982e367
   - enabled: 1
-    path: Assets/6_Scenes/Multiplayer/Main Menu.unity
+    path: Assets/6_Scenes/Multiplayer/Lobby.unity
     guid: 67d962b5dbb7f32439e7fff865f3d327
   - enabled: 1
     path: Assets/6_Scenes/Multiplayer/Game.unity

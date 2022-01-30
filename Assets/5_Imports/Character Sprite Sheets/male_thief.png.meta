@@ -229,7 +229,7 @@ TextureImporter:
     mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: 1
+    wrapW: 0
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -1677,7 +1677,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 1ec4f419958e4b44ead87035eba45469
+    spriteID: 2720ec855832b1544a990588822b80d3
     internalID: 0
     vertices: []
     indices: 

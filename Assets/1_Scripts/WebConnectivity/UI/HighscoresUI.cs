@@ -140,7 +140,7 @@ public class HighscoresUI : MonoBehaviour
 		}
 		else
 		{
-			totalPlayersTextElement.text = $"Total Players in the past 30d: {www.downloadHandler.text}";
+			totalPlayersTextElement.text = $"Total Plays in the past 30d: {www.downloadHandler.text}";
 		}
 	}
 }

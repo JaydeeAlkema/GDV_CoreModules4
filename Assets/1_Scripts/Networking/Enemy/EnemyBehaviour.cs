@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
 
 public class EnemyBehaviour : MonoBehaviour
 {
@@ -19,13 +17,13 @@ public class EnemyBehaviour : MonoBehaviour
 	[SerializeField] private AudioClip[] damageAudio;
 
 	private PhotonView view;
-	private Score score;
+	private ScoreUI score;
 
 	private void Start()
 	{
 		view = GetComponent<PhotonView>();
 		players = FindObjectsOfType<PlayerController>();
-		score = FindObjectOfType<Score>();
+		score = FindObjectOfType<ScoreUI>();
 		healthbarParent.SetActive( false );
 	}
 
@@ -65,7 +63,8 @@ public class EnemyBehaviour : MonoBehaviour
 			{
 				if( health <= 0 )
 				{
-					score.AddScore();
+					collision.GetComponent<PlayerController>().AddScore();
+					score.UpdateScoreCounter();
 					view.RPC( "SpawnParticle", RpcTarget.All );
 					PhotonNetwork.Destroy( this.gameObject );
 				}
@@ -78,11 +77,7 @@ public class EnemyBehaviour : MonoBehaviour
 		health -= 25f;
 		if( !healthbarParent.activeInHierarchy ) healthbarParent.SetActive( true );
 		healthBarImage.fillAmount = health / 100f;
-
-		if( health != 0 )
-		{
-			AudioSource.PlayClipAtPoint( damageAudio[Random.Range( 0, damageAudio.Length )], transform.position );
-		}
+		AudioSource.PlayClipAtPoint( damageAudio[Random.Range( 0, damageAudio.Length )], transform.position );
 	}
 
 	[PunRPC]

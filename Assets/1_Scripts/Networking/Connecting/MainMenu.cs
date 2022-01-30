@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
+using UnityEngine;
 
 public class MainMenu : MonoBehaviourPunCallbacks
 {
