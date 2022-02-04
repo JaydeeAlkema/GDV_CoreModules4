@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
 
 	private void AnimateSprite()
 	{
-		if( canMove )
+		if( canMove && movementInput != Vector2.zero )
 		{
 			anim.SetFloat( "Horizontal", movementInput.x );
 			anim.SetFloat( "Vertical", movementInput.y );
